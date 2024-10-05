@@ -14,13 +14,9 @@ function getHumanChoice(){
     while(true){
         let val = prompt("Choose your pick {rock, paper, scissors} : ");
         val = val.toLowerCase();
-        if(val == 'rock'){
-            return 'rock';
-        } else if (val == 'scissors'){
-            return 'scissors';
-        } else if (val == 'paper'){
-            return 'paper'
-        } else{
+        if(val == 'rock' || val == 'paper' || val == 'scissors'){
+            return val;
+        }else{
             alert("Enter a valid option!");
         }
     }
@@ -63,4 +59,4 @@ function playGame(){
     round = 0;
 }
 
-playGame();
+document.querySelector(".bttn").addEventListener("click", playGame);
