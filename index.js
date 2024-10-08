@@ -1,62 +1,68 @@
 function getComputerChoice(){
-    let val = Math.random();
-    if (val <= 0.25){
-        return 'rock';
-    } else if (val <= 0.75){
-        return 'paper';
-    } else{
-        return 'scissors';
-    }
+    const choices = ['rock', 'paper', 'scissor'];
+    return choices[Math.floor(Math.random()*choices.length)];
 }
 
-function getHumanChoice(){
-
-    while(true){
-        let val = prompt("Choose your pick {rock, paper, scissors} : ");
-        val = val.toLowerCase();
-        if(val == 'rock' || val == 'paper' || val == 'scissors'){
-            return val;
-        }else{
-            alert("Enter a valid option!");
-        }
-    }
-}
-
-let round = 0;
 let humanScore = 0;
 let compScore = 0;
 
-function playRound(humanChoice, compChoice){
-    if (humanChoice == 'rock' && compChoice == 'scissors' || humanChoice == 'paper' && compChoice == 'rock' || humanChoice == 'scissors' && compChoice == 'paper'){
-        alert(`You win round ${round+1}!`);
+function playRound(playerChoice){
+    compChoice = getComputerChoice();
+    const outcomes = {
+        'rock':'scissor',
+        'paper' : 'rock',
+        'scissor' : 'paper'
+    };
+
+    if(playerChoice === compChoice){
+        return "It's a tie!";
+    }
+    else if (outcomes[playerChoice] === compChoice){
         humanScore++;
+        return "You Win!"
     }
-    else if (compChoice == 'rock' && humanChoice == 'scissors' || compChoice == 'paper' && humanChoice == 'rock' || compChoice == 'scissors' && humanChoice == 'paper'){
-        alert(`You lose round ${round+1}!`);
+    else {
         compScore++;
-    }
-    else{
-        alert("It's a tie!");
+        return "You lose!";
     }
 }
 
-function playGame(){
+let display = document.querySelector(".result");
+let buttonDiv = document.querySelector(".bttns");
+const buttonDivClone = buttonDiv.innerHTML;
+
+function resetGame(){
+    humanScore = 0;
+    compScore = 0;
+    buttonDiv.innerHTML = '';
+
+    let playAgain = document.createElement("button");
+    playAgain.textContent = "Play again!";
+    display.append(playAgain);
     
-    while(round < 5){
-        let humanChoice = getHumanChoice();
-        let compChoice = getComputerChoice();
-        playRound(humanChoice,compChoice);
-        round++;
-    }
-    alert('*****Game Over!*****');
-    if(humanScore > compScore){
-        alert("Congrats! You've won the game!");
-    } else if (compScore > humanScore){
-        alert("Well well, you've lost.");
-    } else{
-        alert("Too bad, the game ends in a tie..");
-    }
-    round = 0;
+    playAgain.addEventListener("click",()=>{
+        display.textContent=''
+        buttonDiv.innerHTML = buttonDivClone;
+        buttonEvent();
+    });
 }
 
-document.querySelector(".bttn").addEventListener("click", playGame);
+function endGame(){
+    display.textContent = `${humanScore == 5 ? `You've won!` : `You've lost! `} Your score : ${humanScore} Computer Score : ${compScore} `;
+    resetGame();
+}
+
+function buttonEvent(){
+    let buttons = document.querySelectorAll("button");
+    buttons.forEach(button=>{
+        button.addEventListener("click", ()=> {
+            if (humanScore == 5 || compScore == 5){
+                endGame();
+            } else{
+                display.textContent = playRound(button.className);
+            }
+        })
+    });
+}
+
+buttonEvent();
